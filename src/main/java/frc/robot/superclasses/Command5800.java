@@ -1,95 +1,91 @@
 package frc.robot.superclasses;
 
+import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Robot;
 import frc.robot.base.commands.CommandBase;
 
-import edu.wpi.first.wpilibj.buttons.Button;
-import edu.wpi.first.wpilibj.command.Subsystem;
-
 public abstract class Command5800 extends CommandBase {
-	// Command to run when this command is started
-	protected Command5800 commandParallel;
+    public boolean startedInAuto = false;
+    // Command to run when this command is started
+    protected Command5800 commandParallel;
+    // Command to run when this command is finished
+    protected Command5800 commandSequential;
+    private boolean isWhileHeld = false;
+    private Button button;
 
-	// Command to run when this command is finished
-	protected Command5800 commandSequential;
+    public Command5800(Subsystem requiredSystem) {
+        super();
+        if (requiredSystem != null)
+            requires(requiredSystem);
+    }
 
-	public boolean startedInAuto = false;
+    protected abstract void execute();
 
-	private boolean isWhileHeld = false;
-	private Button button;
+    protected abstract boolean isDone();
 
-	public Command5800(Subsystem requiredSystem) {
-		super();
-		if (requiredSystem != null)
-			requires(requiredSystem);
-	}
+    protected abstract void onCompletion();
 
-	protected abstract void execute();
+    protected void onStart() {
+    }
 
-	protected abstract boolean isDone();
+    protected void interrupted() {
+        this.end();
+    }
 
-	protected abstract void onCompletion();
+    protected final void initialize() {
+        if (commandParallel != null)
+            commandParallel.start();
+        this.startedInAuto = Robot.isAuto;
+        this.onStart();
+    }
 
-	protected void onStart() {
-	}
+    protected final boolean isFinished() {
+        return (isWhileHeld && !button.get()) || isDone();
+    }
 
-	protected void interrupted() {
-		this.end();
-	}
+    protected final void end() {
+        if (commandSequential != null && !(this.startedInAuto && !Robot.isAuto)) {
+            commandSequential.start();
+        }
+        this.onCompletion();
+    }
 
-	protected final void initialize() {
-		if (commandParallel != null)
-			commandParallel.start();
-		this.startedInAuto = Robot.isAuto;
-		this.onStart();
-	}
+    public final Command5800 setParallel(Command5800... commands) {
+        if (commands.length > 1) {
+            Command5800[] newCommands = new Command5800[commands.length - 1];
+            for (int a = 1; a < commands.length; a++)
+                newCommands[a - 1] = commands[a];
+            if (commandParallel != null)
+                commandParallel.setParallel(commands[0].setSequential(newCommands));
+            else
+                commandParallel = commands[0].setSequential(newCommands);
+        } else if (commandParallel != null)
+            commandParallel.setParallel(commands[0]);
+        else
+            commandParallel = commands[0];
+        return this;
+    }
 
-	protected final boolean isFinished() {
-		return (isWhileHeld && !button.get()) || isDone();
-	}
+    public final Command5800 setSequential(Command5800... commands) {
+        if (commands.length > 1) {
+            Command5800[] newCommands = new Command5800[commands.length - 1];
+            for (int a = 1; a < commands.length; a++)
+                newCommands[a - 1] = commands[a];
+            if (commandSequential != null)
+                commandSequential.setParallel(commands[0].setSequential(newCommands));
+            else
+                commandSequential = commands[0].setSequential(newCommands);
+        } else if (commandSequential != null)
+            commandSequential.setParallel(commands[0]);
+        else
+            commandSequential = commands[0];
+        return this;
+    }
 
-	protected final void end() {
-		if (commandSequential != null && !(this.startedInAuto && !Robot.isAuto)) {
-			commandSequential.start();
-		}
-		this.onCompletion();
-	}
-
-	public final Command5800 setParallel(Command5800... commands) {
-		if (commands.length > 1) {
-			Command5800[] newCommands = new Command5800[commands.length - 1];
-			for (int a = 1; a < commands.length; a++)
-				newCommands[a - 1] = commands[a];
-			if (commandParallel != null)
-				commandParallel.setParallel(commands[0].setSequential(newCommands));
-			else
-				commandParallel = commands[0].setSequential(newCommands);
-		} else if (commandParallel != null)
-			commandParallel.setParallel(commands[0]);
-		else
-			commandParallel = commands[0];
-		return this;
-	}
-
-	public final Command5800 setSequential(Command5800... commands) {
-		if (commands.length > 1) {
-			Command5800[] newCommands = new Command5800[commands.length - 1];
-			for (int a = 1; a < commands.length; a++)
-				newCommands[a - 1] = commands[a];
-			if (commandSequential != null)
-				commandSequential.setParallel(commands[0].setSequential(newCommands));
-			else
-				commandSequential = commands[0].setSequential(newCommands);
-		} else if (commandSequential != null)
-			commandSequential.setParallel(commands[0]);
-		else
-			commandSequential = commands[0];
-		return this;
-	}
-
-	public final Command5800 setCancelWhenReleased(Button button) {
-		isWhileHeld = true;
-		this.button = button;
-		return this;
-	}
+    public final Command5800 setCancelWhenReleased(Button button) {
+        isWhileHeld = true;
+        this.button = button;
+        return this;
+    }
 }

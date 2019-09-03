@@ -1,41 +1,38 @@
 package frc.robot.base.commands.autonomous;
 
-import frc.robot.base.commands.drive.CommandDriverAngle;
-import frc.robot.base.commands.drive.CommandDriverPosition;
 import frc.robot.base.commands.generic.CommandMotorTime;
 import frc.robot.base.commands.generic.CommandMotorTimeAngle;
 import frc.robot.base.commands.teleoperated.CommandIntake;
 import frc.robot.superclasses.Command5800;
 
 public class Autonomous extends Command5800 {
-	public Autonomous() {
-		super(null);
-	}
+    public static Autonomous[] autonomous = new Autonomous[12];
 
-	@Override
-	protected void execute() {
-	}
+    public Autonomous() {
+        super(null);
+    }
 
-	@Override
-	protected boolean isDone() {
-		return true;
-	}
+    public static void initAutonomous() {
+        autonomous[0] = new Autonomous();
 
-	@Override
-	protected void onCompletion() {
-	}
+        //primeira rotina
+        autonomous[1] = (Autonomous) new Autonomous().setSequential(
+                new CommandMotorTime(driver, 0.6, 3),
+                new CommandMotorTimeAngle(driver, 0.5, 2),
+                new CommandIntake(false, true)
+        );
+    }
 
-	public static Autonomous[] autonomous = new Autonomous[12];
+    @Override
+    protected void execute() {
+    }
 
-	public static void initAutonomous() {
-		autonomous[0] = new Autonomous();
+    @Override
+    protected boolean isDone() {
+        return true;
+    }
 
-		//primeira rotina
-		autonomous[1] = (Autonomous) new Autonomous().setSequential(
-				new CommandMotorTime(driver, 0.6, 3),
-				new CommandMotorTimeAngle(driver, 0.5, 2),
-				new CommandIntake(false, true)
-				);
-	
-	}
+    @Override
+    protected void onCompletion() {
+    }
 }

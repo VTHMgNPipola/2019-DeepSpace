@@ -11,16 +11,16 @@ import frc.robot.base.util.Gains;
  * measurement system will cause calculation errors.
  */
 public class RobotParameters {
-	/* Drive Train */
-	public static final double WHEEL_DIAMETER = 6 * Converter.RATIO_INCHES_METERS, WHEEL_BASE = 0.65;
+    /* Drive Train */
+    public static final double WHEEL_DIAMETER = 6 * Converter.RATIO_INCHES_METERS, WHEEL_BASE = 0.65;
 
-	/* Sensors */
-	public static final double ENCODER_RESOLUTION = 1440;
+    /* Sensors */
+    public static final double ENCODER_RESOLUTION = 1440;
 
-	public static Gains positionGains = new Gains(0.5, 0, 0, 0);
-	public static Gains rateGains = new Gains(0.5, 0, 0, 0);
-	public static Gains angleGains = new Gains(0.5, 0, 0, 0);
+    public static Gains positionGains = new Gains(0.5, 0, 0, 0);
+    public static Gains rateGains = new Gains(0.5, 0, 0, 0);
+    public static Gains angleGains = new Gains(0.5, 0, 0, 0);
 
-	public static Gains armGains = new Gains(3.6, 0.000018, 30, 0);
-	public static Gains liftGains = new Gains(0.13, 0.000034, 0.9, 0);
+    public static Gains armGains = new Gains(3.6, 0.000018, 30, 0);
+    public static Gains liftGains = new Gains(0.13, 0.000034, 0.9, 0);
 }

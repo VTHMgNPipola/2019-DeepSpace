@@ -6,34 +6,32 @@ import frc.robot.superclasses.Command5800;
 
 public class CommandLift extends Command5800 {
 
-    int limit = 10000;
-	double _sp;
-	
-	public CommandLift() {	
-		super(CommandBase.lift);
-	}
+    public CommandLift() {
+        super(CommandBase.lift);
+    }
 
-	protected void execute() {
-        this._sp = SubsystemJoystick.axis_j_Y.get()*0.4;
-        if (this._sp >= 0){
-            if (CommandBase.lift.liftMotor.getSelectedSensorPosition() <= this.limit){
-                CommandBase.lift.setLiftMotor(this._sp);
+    protected void execute() {
+        final double _sp = SubsystemJoystick.axis_j_Y.get() * 0.4;
+        final int limit = 10000;
+        if (_sp >= 0) {
+            if (CommandBase.lift.liftMotor.getSelectedSensorPosition() <= limit) {
+                CommandBase.lift.setLiftMotor(_sp);
             } else {
                 CommandBase.lift.setLiftMotor(0.1);
             }
-        } if (this._sp < 0){
-            if (CommandBase.lift.liftMotor.getSelectedSensorPosition() >= -this.limit){
-                CommandBase.lift.setLiftMotor(this._sp);
+        } else {
+            if (CommandBase.lift.liftMotor.getSelectedSensorPosition() >= -limit) {
+                CommandBase.lift.setLiftMotor(_sp);
             } else {
                 CommandBase.lift.setLiftMotor(-0.1);
             }
         }
-	}
-	
-	protected boolean isDone() {
-		return false;
-	}
-	
-	protected void onCompletion() {
-	}
+    }
+
+    protected boolean isDone() {
+        return false;
+    }
+
+    protected void onCompletion() {
+    }
 }
